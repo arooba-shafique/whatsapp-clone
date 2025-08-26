@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ status.user.username }}'s Status</h2>
+<img src="{{ status.image.url }}" alt="Status" style="height: 400px; width: auto; border-radius: 10px;"><br>
+<p>{{ status.caption }}</p>
+<p>Posted: {{ status.created_at|timesince }} ago</p>
+
+{% if request.user == status.user %}
+  <p><strong>Viewed by:</strong> {{ status.viewers.count }} people</p>
+  <ul>
+    {% for viewer in status.viewers.all %}
+      <li>{{ viewer.username }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+  .status-upload-container {
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .status-upload-container h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+  }
+
+  .status-upload-container form p {
+    margin-bottom: 15px;
+  }
+
+  .status-upload-container .btn-success {
+    width: 100%;
+    padding: 10px;
+    font-weight: 500;
+  }
+</style>
+
+<div class="status-upload-container">
+  <h3>Upload a Status</h3>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-success">Upload</button>
+  </form>
+</div>
+
+{% endblock %}

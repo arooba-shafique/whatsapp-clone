@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6">
+  <h2 class="text-xl font-semibold mb-4">Notification Settings</h2>
+  <ul class="space-y-4">
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Message Notifications
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Group Notifications
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Play Sound for New Messages
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Vibration on Notification
+      </label>
+    </li>
+  </ul>
+</div>
+{% endblock %}

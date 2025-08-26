@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-md mt-10">
+  <h2 class="text-2xl font-bold mb-6 text-green-600">Help Center</h2>
+
+  <div class="space-y-8 text-gray-800 dark:text-gray-100">
+
+    <div>
+      <h3 class="text-lg font-semibold">📌 Frequently Asked Questions</h3>
+      <div class="mt-4 space-y-4 text-sm">
+        
+        <div>
+          <p class="font-medium text-green-700">💬 How to delete messages?</p>
+          <p class="ml-4 mt-1 text-gray-700 dark:text-gray-300">
+            Tap and hold the message you want to delete. If you're the sender, you’ll see options to delete it for yourself or for everyone.
+          </p>
+        </div>
+
+        <div>
+          <p class="font-medium text-green-700">🚫 How to block a contact?</p>
+          <p class="ml-4 mt-1 text-gray-700 dark:text-gray-300">
+            Go to the user's profile and click the <strong>"Block"</strong> button. This prevents them from sending you messages.
+          </p>
+        </div>
+
+        
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold">📞 Contact Support</h3>
+      <p class="text-sm mt-2">
+        Have an issue? Email us at 
+        <a href="mailto:support@example.com" class="text-blue-600 underline">support@example.com</a>
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold">🔐 Privacy & Terms</h3>
+      <ul class="text-sm mt-2 list-disc ml-6 space-y-1">
+        <li><a href="{% url 'terms_of_service' %}" class="text-blue-600 underline">Terms of Service</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-semibold">📱 App Information</h3>
+      <p class="text-sm mt-2">
+        Version: <strong>1.0.0</strong><br>
+        Last Updated: <strong>July 2025</strong>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

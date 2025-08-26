@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  .profile-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #e5ddd5;
+    overflow: hidden;
+  }
+
+  .left-panel {
+    width: 25%;
+    background-color: #fff;
+    padding: 30px;
+    border-right: 1px solid #ddd;
+  }
+
+  .right-panel {
+    flex: 1;
+    background-image: url("/static/whatsapp-bg.png");
+
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #888;
+    flex-direction: column;
+  }
+
+  .profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #4caf50;
+  }
+
+  .field-label {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .field-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+
+  .save-button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #25D366;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .save-button:hover {
+    background-color: #1ebe5d;
+  }
+
+  .settings-dropdown,
+  .status-dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 999;
+    width: 200px;
+    padding: 10px;
+    display: none;
+    top: -200px;
+    left:30px
+  }
+
+  .settings-dropdown a,
+  .status-dropdown a {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 4px;
+  }
+
+  .settings-dropdown a:hover,
+  .status-dropdown a:hover {
+    background-color: #f1f1f1;
+  }
+
+  .icon-bar {
+    width: 70px;
+    background-color: #f0f2f5;
+    border-right: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+  }
+
+  .top-icons i,
+  .bottom-icons i {
+    font-size: 18px;
+    color: #555;
+    margin: 20px 0;
+    cursor: pointer;
+  }
+
+  .bottom-icons a img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    cursor: pointer;
+    object-fit: cover;
+  }
+</style>
+
+<div class="profile-container">
+  <!-- Sidebar -->
+  <div class="icon-bar">
+    <div class="top-icons">
+      <a href="{% url 'chat_home' %}" title="Chats">
+        <i class="fas fa-comment-dots"></i>
+      </a>
+      <div class="dropdown" style="position: relative;">
+        <a href="{% url 'status_view' %}">
+
+        <i class="fas fa-circle-notch" title="Status" id="statusIcon" style="cursor: pointer;"></i>
+        </a>
+        <div id="statusMenu" class="status-dropdown">
+          <a href="{% url 'status_view' %}">👀 View Status</a>
+          <a href="{% url 'status_upload' %}">➕ Add Status</a>
+        </div>
+      </div>
+      <a href="{% url 'create_group' %}" title="Create Group">
+      <i class="fas fa-users" title="Communities"></i>
+      </a>
+    </div>
+    <div class="bottom-icons" style="margin-top: auto; margin-bottom: 80px;">
+
+      <div class="dropdown" style="position: relative;">
+        <i class="fas fa-cog" id="settingsIcon" title="Settings" style="margin-left: 6px;"></i>
+
+        <div id="settingsMenu" class="settings-dropdown">
+          <a href="{% url 'profile_sidebar' %}">Profile</a>
+          <a href="{% url 'chat_settings' %}">Chats</a>
+          <a href="{% url 'help_center' %}">Help</a>
+          <a href="{% url 'logout' %}">Logout</a>
+        </div>
+      </div>
+      <a href="{% url 'profile_sidebar' %}" title="My Profile">
+        {% if user.profile_picture %}
+          <img src="{{ user.profile_picture.url }}" alt="Me">
+        {% else %}
+          <img src="{% static 'default-profile.png' %}" alt="Me">
+        {% endif %}
+      </a>
+    </div>
+  </div>
+
+  <!-- Profile Editing Form -->
+  <form class="left-panel" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <center>
+      {% if user.profile_picture %}
+        <img src="{{ user.profile_picture.url }}" alt="Profile" class="profile-pic">
+      {% else %}
+        <img src="{% static 'default-profile.png' %}" alt="Profile" class="profile-pic">
+      {% endif %}
+      <div style="margin-top: 10px;">
+        <input type="file" name="profile_picture" accept="image/*">
+      </div>
+    </center>
+
+    <div class="field-label">Your name</div>
+    <input type="text" name="username" class="field-input" value="{{ user.username }}" required>
+    <p style="font-size: 13px; color: #888; margin-top: 8px;">
+      This is not your username or PIN. This name will be visible to your WhatsApp contacts.
+    </p>
+
+    <div class="field-label">About</div>
+    <input type="text" name="about" class="field-input" value="{{ user.about|default:'Hey there! I am using WhatsApp.' }}">
+    <button type="submit" class="save-button">Save</button>
+  </form>
+
+  <!-- Right Section -->
+  <div class="right-panel">
+    <div>
+      <i class="fas fa-user-circle" style="font-size: 60px;"></i><br>
+      Profile
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const statusIcon = document.getElementById("statusIcon");
+    const statusMenu = document.getElementById("statusMenu");
+    if (statusIcon && statusMenu) {
+      statusIcon.addEventListener("click", function (e) {
+        e.stopPropagation();
+        statusMenu.style.display = statusMenu.style.display === "none" ? "block" : "none";
+      });
+      document.addEventListener("click", function (e) {
+        if (!statusMenu.contains(e.target) && e.target !== statusIcon) {
+          statusMenu.style.display = "none";
+        }
+      });
+    }
+
+    const settingsIcon = document.getElementById("settingsIcon");
+    const settingsMenu = document.getElementById("settingsMenu");
+    if (settingsIcon && settingsMenu) {
+      settingsIcon.addEventListener("click", function (e) {
+        e.stopPropagation();
+        settingsMenu.style.display = settingsMenu.style.display === "none" ? "block" : "none";
+      });
+      document.addEventListener("click", function (e) {
+        if (!settingsMenu.contains(e.target) && e.target !== settingsIcon) {
+          settingsMenu.style.display = "none";
+        }
+      });
+    }
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6">
+  <h2 class="text-xl font-semibold mb-4">Storage and Data Settings</h2>
+  <ul class="space-y-4">
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Auto-download Photos on Wi-Fi
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Auto-download Videos on Wi-Fi
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Limit Media Auto-download on Mobile Data
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Clear All Chats
+      </label>
+    </li>
+  </ul>
+</div>
+{% endblock %}

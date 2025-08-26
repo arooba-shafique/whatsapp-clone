@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2 class="text-lg font-bold p-4">⭐ Starred Messages</h2>
+
+<div class="p-4">
+  <h3 class="font-semibold mb-2 text-green-600">Direct Messages</h3>
+  {% for msg in direct_starred %}
+    <div class="border border-gray-300 rounded-lg p-3 mb-3 bg-white shadow">
+      <div><strong>From:</strong> {{ msg.sender.username }}</div>
+      <div><strong>To:</strong> {{ msg.receiver.username }}</div>
+      
+      {% if msg.message_type == 'text' %}
+        <p>{{ msg.message }}</p>
+      {% elif msg.message_type == 'image' %}
+        {% if msg.file %} {# ADD THIS CHECK #}
+          <img src="{{ msg.file.url }}" alt="image" class="w-32 rounded mt-2">
+        {% else %}
+          <p class="text-red-500">Image file missing.</p> {# Optional: Display a message #}
+        {% endif %}
+      {% elif msg.message_type == 'video' %}
+        {% if msg.file %} {# ADD THIS CHECK #}
+          <video src="{{ msg.file.url }}" controls class="w-64 mt-2"></video>
+        {% else %}
+          <p class="text-red-500">Video file missing.</p> {# Optional: Display a message #}
+        {% endif %}
+      {% elif msg.message_type == 'audio' %}
+        {% if msg.file %} {# ADD THIS CHECK #}
+          <audio src="{{ msg.file.url }}" controls class="mt-2"></audio>
+        {% else %}
+          <p class="text-red-500">Audio file missing.</p> {# Optional: Display a message #}
+        {% endif %}
+      {% else %} {# For 'file' or other types not explicitly handled #}
+        {% if msg.file %} {# ADD THIS CHECK #}
+          <a href="{{ msg.file.url }}" download class="text-blue-500 underline mt-2">Download File</a>
+        {% else %}
+          <p class="text-red-500">File missing.</p> {# Optional: Display a message #}
+        {% endif %}
+      {% endif %}
+      
+      <small class="text-gray-500">{{ msg.timestamp|date:"d M Y, H:i" }}</small>
+    </div>
+  {% empty %}
+    <p class="text-gray-600">No direct starred messages found.</p>
+  {% endfor %}
+
+  <hr class="my-6">
+
+  <h3 class="font-semibold mb-2 text-blue-600">Group Messages</h3>
+  {% for msg in group_starred %}
+    <div class="border border-gray-300 rounded-lg p-3 mb-3 bg-white shadow">
+      <div><strong>From:</strong> {{ msg.sender.username }}</div>
+      <div><strong>Group:</strong> {{ msg.group.name }}</div>
+      
+      {% if msg.message_type == 'text' %}
+        <p>{{ msg.message }}</p>
+      {% elif msg.message_type == 'image' %}
+        {% if msg.file %} {# ADD THIS CHECK #}
+          <img src="{{ msg.file.url }}" alt="image" class="w-32 rounded mt-2">
+        {% else %}
+          <p class="text-red-500">Image file missing.</p> {# Optional: Display a message #}
+        {% endif %}
+      {% elif msg.message_type == 'video' %}
+        {% if msg.file %} {# ADD THIS CHECK #}
+          <video src="{{ msg.file.url }}" controls class="w-64 mt-2"></video>
+        {% else %}
+          <p class="text-red-500">Video file missing.</p> {# Optional: Display a message #}
+        {% endif %}
+      {% elif msg.message_type == 'audio' %}
+        {% if msg.file %} {# ADD THIS CHECK #}
+          <audio src="{{ msg.file.url }}" controls class="mt-2"></audio>
+        {% else %}
+          <p class="text-red-500">Audio file missing.</p> {# Optional: Display a message #}
+        {% endif %}
+      {% else %} {# For 'file' or other types not explicitly handled #}
+        {% if msg.file %} {# ADD THIS CHECK #}
+          <a href="{{ msg.file.url }}" download class="text-blue-500 underline mt-2">Download File</a>
+        {% else %}
+          <p class="text-red-500">File missing.</p> {# Optional: Display a message #}
+        {% endif %}
+      {% endif %}
+      
+      <small class="text-gray-500">{{ msg.timestamp|date:"d M Y, H:i" }}</small>
+    </div>
+  {% empty %}
+    <p class="text-gray-600">No group starred messages found.</p>
+  {% endfor %}
+</div>
+<script src="{% static 'js/star_logic.js' %}"></script>
+
+{% endblock %}

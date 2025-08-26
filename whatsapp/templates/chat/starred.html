@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+<h2 class="text-xl font-bold mb-4 text-green-700">Starred Direct Messages</h2>
+<ul class="mb-8">
+  {% for msg in direct_starred %}
+    <li class="p-2 border-b border-gray-300">{{ msg.sender }}: {{ msg.content }}</li>
+  {% empty %}
+    <li class="text-gray-500">No starred direct messages.</li>
+  {% endfor %}
+</ul>
+
+<h2 class="text-xl font-bold mb-4 text-green-700">Starred Group Messages</h2>
+<ul>
+  {% for msg in group_starred %}
+    <li class="p-2 border-b border-gray-300">
+      [{{ msg.group.name }}] {{ msg.sender }}: {{ msg.content }}
+    </li>
+  {% empty %}
+    <li class="text-gray-500">No starred group messages.</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

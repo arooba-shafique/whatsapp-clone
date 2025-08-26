@@ -1,0 +1,37 @@
+{% load custom_filters %}
+
+<div class="reaction-summary">
+    {% if is_group %}
+        {% if message.reactions.exists %}
+            {% for unique_emoji in message.reactions.all|get_unique_emojis %}
+                <span class="emoji-count-display"
+                      data-msg-id="{{ message.id }}"
+                      data-emoji="{{ unique_emoji }}"
+                      title="
+                      {% for reaction in message.reactions.all|filter_by_emoji:unique_emoji %}
+                          {{ reaction.user.username }}
+                          {% if not forloop.last %}, {% endif %}
+                      {% endfor %}
+                      ">
+                    {{ unique_emoji }} {{ message.reactions.all|count_emoji:unique_emoji }}
+                </span>
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        {% if message.messagereaction_set.exists %}
+            {% for unique_emoji in message.messagereaction_set.all|get_unique_emojis %}
+                <span class="emoji-count-display"
+                      data-msg-id="{{ message.id }}"
+                      data-emoji="{{ unique_emoji }}"
+                      title="
+                      {% for reaction in message.messagereaction_set.all|filter_by_emoji:unique_emoji %}
+                          {{ reaction.user.username }}
+                          {% if not forloop.last %}, {% endif %}
+                      {% endfor %}
+                      ">
+                    {{ unique_emoji }} {{ message.messagereaction_set.all|count_emoji:unique_emoji }}
+                </span>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+</div>

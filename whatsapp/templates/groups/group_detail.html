@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %} 
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/chat_styles.css' %}">
+<div class="whatsapp-container">
+    <div class="icon-bar">
+        <div class="top-icons">
+            <div style="position: relative;">
+                <i class="fas fa-comment-dots" title="Chats"></i>
+                <span id="chatNotificationDot" style="position: absolute; top: 0px; right: 0px; background: red; width: 8px; height: 8px; border-radius: 50%; display: none;"></span>
+            </div>
+            <div class="dropdown" style="position: relative;">
+                <i class="fas fa-circle-notch" title="Status" id="statusIcon" style="cursor: pointer;"></i>
+                <div id="statusMenu" class="status-dropdown" style="display: none;">
+                    <a href="{% url 'status_view' %}">👀 View Status</a>
+                    <a href="{% url 'status_upload' %}">➕ Add Status</a>
+                </div>
+            </div>
+            <a href="{% url 'create_group' %}" title="Create Group">
+                <i class="fas fa-users" style="cursor: pointer;"></i>
+            </a>
+        </div>
+        <div class="bottom-icons">
+            <div class="dropdown" style="position: relative;">
+                <i class="fas fa-cog" title="Settings" id="settingsIcon" style="cursor: pointer;"></i>
+                <div id="settingsMenu" class="settings-dropdown" style="display: none;">
+                    <a href="{% url 'profile_sidebar' %}">Profile</a>
+                    <a href="{% url 'help_center' %}">Help</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+            <a href="{% url 'profile_sidebar' %}" title="My Profile">
+                {% if request.user.profile_picture %}
+                    <img src="{{ request.user.profile_picture.url }}" alt="Me">
+                {% else %}
+                    <img src="{% static 'default-profile.png' %}" alt="Me">
+                {% endif %}
+            </a>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
+<input type="text" placeholder="Search or start new chat" style="flex-grow: 1;" id="chatSearchInput">            <div class="dropdown" style="position: relative; margin-left: 10px;">
+                <i class="fas fa-ellipsis-v menu-icon" id="menuIcon" title="Menu" style="cursor: pointer;"></i>
+                <div class="menuDropdown" style="display: none; position: absolute; top: 25px; right: 0; background: white; border: 1px solid #ccc; border-radius: 5px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1000;">
+                    <a href="{% url 'profile_sidebar' %}" style="display: block; padding: 5px 10px;">Profile</a>
+                    <a href="{% url 'starred_messages' %}" style="display: block; padding: 5px 10px;">Starred Messages</a>
+                                        <a href="{% url 'add_contact' %}">Add Contact</a>
+
+                    <a href="{% url 'create_group' %}" style="display: block; padding: 5px 10px;">Create Group</a>
+                    <a href="{% url 'logout' %}" style="display: block; padding: 5px 10px;">Log out</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-list">
+            {% for chat_item in combined_chats %}
+                {% if chat_item.type == 'group' %}
+                    <a href="{% url 'group_chat_detail' chat_item.participant.id %}"
+   class="user-card {% if is_group and chat_item.participant.id == group.id %}active-chat{% endif %}"
+   data-search-text="{{ chat_item.participant.name|lower }}"> 
+                        {% if chat_item.participant.icon %}
+                            <img src="{{ chat_item.participant.icon.url }}" class="user-avatar" alt="{{ chat_item.participant.name }}">
+                        {% else %}
+                            <img src="{% static 'default-group.png' %}" class="user-avatar" alt="{{ chat_item.participant.name }}">
+                        {% endif %}
+                        <div>
+                            <strong>{{ chat_item.participant.name }}</strong><br>
+                            <small>
+                                {% if chat_item.last_message %}
+                                    {% if chat_item.last_message.is_deleted %}
+                                        This message was deleted
+                                    {% elif chat_item.last_message.message %}
+                                        {{ chat_item.last_message.sender.username }}: {{ chat_item.last_message.message|truncatechars:30 }}
+                                    {% elif chat_item.last_message.file %}
+                                        {{ chat_item.last_message.sender.username }}: 📎 {{ chat_item.last_message.file.name|basename }}
+                                    {% endif %}
+                                {% else %}
+                                    No messages yet
+                                {% endif %}
+                            </small>
+                        </div>
+                    </a>
+                {% elif chat_item.type == 'direct' %} 
+                   <a href="{% url 'chat_detail' chat_item.participant.id %}"
+   class="user-card {% if not is_group and receiver and chat_item.participant.id == receiver.id %}active-chat{% endif %}"
+   data-search-text="{{ chat_item.participant.username|lower }}"> 
+                        {% if chat_item.participant.profile_picture %}
+                            <img src="{{ chat_item.participant.profile_picture.url }}" class="user-avatar" alt="{{ chat_item.participant.username }}">
+                        {% else %}
+                            <img src="{% static 'default-profile.png' %}" class="user-avatar" alt="{{ chat_item.participant.username }}">
+                        {% endif %}
+                        <div>
+                            <strong>{{ chat_item.participant.username }}</strong><br>
+                            <small>
+                                {% if chat_item.last_message %}
+                                    {% if chat_item.last_message.is_deleted %}
+                                        This message was deleted
+                                    {% elif chat_item.last_message.message %}
+                                        {{ chat_item.last_message.message|truncatechars:30 }}
+                                    {% elif chat_item.last_message.file %}
+                                        📎 {{ chat_item.last_message.file.name|basename }}
+                                    {% endif %}
+                                {% else %}
+                                    No messages yet
+                                {% endif %}
+                            </small>
+                        </div>
+                    </a>
+                {% endif %}
+            {% empty %}
+                <p>No chats or groups found.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="chat-section">
+        <div class="chat-header">
+            <a href="{% url 'group_profile' group.id %}" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+                {% if group.icon %}
+                    <img src="{{ group.icon.url }}" alt="{{ group.name }}">
+                {% else %}
+                    <img src="{% static 'default-group.png' %}" alt="{{ group.name }}">
+                {% endif %}
+                <span>{{ group.name }}</span>
+            </a>
+        </div>
+
+        <div class="chat-messages" id="chatBox">
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="chat-bubble {% if msg.sender == request.user %}sent{% else %}received{% endif %} {% if msg.deleted_for_everyone or request.user in msg.deleted_for.all %}deleted{% endif %}"
+                        data-id="{{ msg.id }}"
+                        data-is-group="true"
+                        data-sender-id="{{ msg.sender.id }}"
+                        style="position: relative;">
+
+                        {% if msg.sender != request.user %}
+                            <strong style="color:#555;">{{ msg.sender.username }}</strong><br>
+                        {% endif %}
+
+                        {% if msg.deleted_for_everyone or request.user in msg.deleted_for.all %}
+                            <span class="deleted-message" style="font-style: italic; color: gray;">This message was deleted</span>
+                        {% else %}
+                            {% if msg.is_forwarded %}
+                                <div style="font-size: 0.8em; color: #888; margin-bottom: 2px;">
+                                    <i class="fas fa-share-square"></i> Forwarded
+                                </div>
+                            {% endif %}
+
+                            {% if msg.message %}
+                                <span class="message-text" id="group-msg-text-{{ msg.id }}">
+                                    {{ msg.message }}
+                                </span>
+                                <br>
+                            {% endif %}
+
+                            {% if msg.file %}
+                                {% if msg.message_type == "image" %}
+                                    <img src="{{ msg.file.url }}" alt="Image" class="chat-image-clickable" style="max-width: 150px; border-radius: 5px; cursor: pointer;">
+                                {% elif msg.message_type == "video" %}
+                                    <video controls style="max-width: 150px;"><source src="{{ msg.file.url }}"></video><br>
+                                {% else %}
+                                    <a href="{{ msg.file.url }}" target="_blank" download="{{ msg.file.name|basename }}">📎 {{ msg.file.name|basename }}</a><br>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                        <div class="reaction-display" id="reactions-{{ msg.id }}" style="margin-top: 4px;">
+                            {% include "chat/reactions.html" with message=msg is_group=True %}
+                        </div>
+
+                        <span class="message-time">
+                            {{ msg.timestamp|date:"h:i A" }}
+                            {% if msg.id in starred_msg_ids %}
+                                <i class="fas fa-star toggle-star starred-icon" data-msg-id="{{ msg.id }}" title="Unstar"></i>
+                            {% else %}
+                                <i class="fas fa-star toggle-star unstarred-icon" data-msg-id="{{ msg.id }}" title="Star"></i>
+                            {% endif %}
+
+                            {% if msg.sender == request.user %}
+                                <span class="tick-icons">
+                                    {% with seen_count=msg.seen_by.count total_members=group.members.count %}
+                                        {% if total_members == 0 or total_members == 1 %}
+                                            {% if seen_count == 1 %}
+                                                <i class="fas fa-check-double blue"></i>
+                                            {% else %}
+                                                <i class="fas fa-check"></i>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if seen_count == 1 %}
+                                                <i class="fas fa-check"></i>
+                                            {% elif seen_count > 1 and seen_count < total_members %}
+                                                <i class="fas fa-check-double"></i>
+                                            {% elif seen_count == total_members %}
+                                                <i class="fas fa-check-double blue"></i>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endwith %}
+                                </span>
+                            {% endif %}
+
+                            {% if msg.sender != request.user %}
+                                <span class="emoji-reaction-wrapper" style="position: relative;">
+                                    <i class="fas fa-smile reaction-toggle"
+                                        title="React"
+                                        data-msg-id="{{ msg.id }}"
+                                        data-is-group="true"
+                                        style="cursor: pointer;"></i>
+
+                                    <div class="reaction-menu"
+                                        id="reaction-menu-{{ msg.id }}"
+                                        style="display: none; position: absolute; bottom: 20px; right: 0; background: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 10;">
+                                        {% for emoji in emoji_reactions %}
+                                            <button class="reaction-btn"
+                                                    data-msg-id="{{ msg.id }}"
+                                                    data-emoji="{{ emoji }}"
+                                                    data-is-group="true"
+                                                    data-group-id="{{ group.id }}"
+                                                    style="font-size: 18px; background: none; border: none; cursor: pointer; padding: 3px; margin: 0; display: inline-block;">
+                                                {{ emoji }}
+                                            </button>
+                                        {% endfor %}
+                                    </div>
+                                </span>
+                            {% endif %}
+
+                            <i class="fas fa-share forward-message-btn" title="Forward Message"
+                                data-original-message-id="{{ msg.id }}"
+                                data-original-message-type="group"
+                                style="cursor: pointer;">
+                            </i>
+
+                            <i class="fa fa-trash delete-icon"
+                                data-msg-id="{{ msg.id }}"
+                                data-is-sender="{% if msg.sender.id == request.user.id %}true{% else %}false{% endif %}"
+                                data-is-group="true"></i>
+                        </span>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">No messages yet.</p>
+            {% endif %}
+        </div>
+
+        <div id="deleteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+            <div style="background:white; padding:20px; border-radius:10px;">
+                <h4>Delete this message?</h4>
+                <button id="deleteForMeBtn">Delete for Me</button>
+                <button id="deleteForEveryoneBtn" style="display: none;">Delete for Everyone</button>
+                <button id="cancelDeleteBtn">Cancel</button>
+            </div>
+        </div>
+
+        <div id="forwardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+            <div style="background:white; padding:20px; border-radius:10px; width:300px; max-height:80vh; overflow-y:auto;">
+                <span class="close-button" style="float:right; cursor:pointer; font-size:24px;">&times;</span>
+                <h4>Forward Message To:</h4>
+                <input type="hidden" id="forwardOriginalMessageId">
+                <input type="hidden" id="forwardOriginalMessageType">
+
+                <h5 style="margin-top:15px; margin-bottom:5px;">Users</h5>
+                <ul id="forwardUserList" style="list-style: none; padding: 0;">
+                    {% for u in users %}
+                        {% if u != request.user %}
+                            <li style="margin-bottom: 5px;">
+                                <label style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="checkbox" name="forwardRecipient" value="{{ u.id }}" data-type="user" style="margin-right: 8px;">
+                                    {% if u.profile_picture %}
+                                    <img src="{{ u.profile_picture.url }}" alt="{{ u.username }}" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
+                                    {% else %}
+                                    <img src="{% static 'default-profile.png' %}" alt="{{ u.username }}" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
+                                    {% endif %}
+                                    {{ u.username }}
+                                </label>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+                <h5 style="margin-top:15px; margin-bottom:5px;">Groups</h5>
+                <ul id="forwardGroupList" style="list-style: none; padding: 0;">
+                    {% for g_option in groups %}
+                        {% if g_option.id != group.id %}
+                            <li style="margin-bottom: 5px;">
+                                <label style="display: flex; align-items: center; cursor: pointer;">
+                                    <input type="checkbox" name="forwardRecipient" value="{{ g_option.id }}" data-type="group" style="margin-right: 8px;">
+                                    {% if g_option.icon %}
+                                    <img src="{{ g_option.icon.url }}" alt="{{ g_option.name }}" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
+                                    {% else %}
+                                    <img src="{% static 'default-group.png' %}" alt="{{ g_option.name }}" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
+                                    {% endif %}
+                                    {{ g_option.name }}
+                                </label>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+                <button id="confirmForwardBtn" style="margin-top: 20px; padding: 10px 20px; background-color: #25D366; color: white; border: none; border-radius: 5px; cursor: pointer;">Forward Selected</button>
+                <button onclick="document.getElementById('forwardModal').style.display='none'" style="margin-top: 10px; padding: 10px 20px; background-color: #ccc; color: black; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
+            </div>
+        </div>
+        <div class="chat-footer">
+            <form method="POST" enctype="multipart/form-data" id="groupMessageForm">
+                {% csrf_token %}
+                
+                <textarea id="messageInput" name="message" rows="1" placeholder="Type a message..."></textarea>
+                <label for="fileInput" style="cursor: pointer;">
+                    <i class="fas fa-paperclip"></i>
+                </label>
+                <input type="file" id="fileInput" name="file" style="display: none;">
+
+                <input type="hidden" id="messageTypeInput" name="message_type" value="text">
+
+                <button type="submit" id="messageSendButton">➤</button>
+             </form>
+            </div>
+
+<style>
+.chat-bubble.deleted {
+    opacity: 0.7;
+    background-color: #f0f0f0 !important;
+    border-color: #e0e0e0 !important;
+}
+
+.chat-bubble.deleted .deleted-message {
+    display: block;
+    padding: 5px 0;
+    text-align: center;
+    font-size: 0.9em;
+    color: #888;
+}
+
+.chat-bubble.deleted .reaction-display,
+.chat-bubble.deleted .message-time .fa-share,
+.chat-bubble.deleted .message-time .delete-icon,
+.chat-bubble.deleted .message-time .toggle-star,
+.chat-bubble.deleted .message-time .tick-icons,
+.chat-bubble.deleted .message-time .emoji-reaction-wrapper {
+    display: none;
+}
+</style>
+
+
+<div id="checkNewMessagesUrl" data-url="{% url 'check_new_messages' %}" style="display: none;"></div>
+<input type="hidden" id="toggleStarUrl" value="{% url 'toggle_starred_group_message' %}">
+
+
+<script id="global-data" type="application/json">
+    {
+        "groupId": {{ group.id }},
+        "currentUserId": {{ request.user.id }},
+        "csrfToken": "{{ csrf_token }}"
+    }
+</script>
+<script>
+    const CSRF_TOKEN = '{{ csrf_token }}';
+</script>
+
+<script type="module" src="{% static 'js/globals.js' %}"></script>
+
+
+<script type="module" src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
+<script type="module" src="{% static 'js/utils.js' %}"></script>
+<script type="module" src="{% static 'js/modals.js' %}"></script>
+<script type="module" src="{% static 'js/forward.js' %}"></script>
+<script type="module" src="{% static 'js/dropdown.js' %}"></script>
+<script type="module" src="{% static 'js/reactions.js' %}"></script>
+<script type="module" src="{% static 'js/emoji_picker.js' %}"></script>
+<script type="module" src="{% static 'js/emoji_reactions.js' %}"></script>
+<script type="module" src="{% static 'js/messages.js' %}"></script>
+<script type="module" src="{% static 'js/star_toggle.js' %}"></script>
+
+{% endblock %}

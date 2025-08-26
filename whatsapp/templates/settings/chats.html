@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-6">
+  <h2 class="text-xl font-semibold mb-4">Chat Settings</h2>
+  <ul class="space-y-4">
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Enter Key Sends Message
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Show Media in Gallery
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Enable Dark Mode
+      </label>
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" class="mr-2"> Archive Chats Automatically
+      </label>
+    </li>
+  </ul>
+</div>
+{% endblock %}

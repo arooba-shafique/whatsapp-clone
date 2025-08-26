@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Add a New Contact</h3>
+
+    <form method="POST" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">Add Contact</button>
+    </form>
+
+    <a href="{% url 'chat_home' %}" class="btn btn-secondary mt-3">Back to Chats</a>
+</div>
+{% endblock %}

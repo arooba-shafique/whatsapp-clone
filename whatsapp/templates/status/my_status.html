@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h2 style="padding: 10px 20px;">My Status</h2>
+
+<div style="padding: 20px;">
+  {% if statuses %}
+    {% for status in statuses %}
+      <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 15px;">
+        <strong>You</strong>
+        <small style="color: gray;"> ({{ status.created_at|timesince }} ago)</small><br>
+
+        {% if status.image %}
+          <img src="{{ status.image.url }}" style="width: 200px; border-radius: 10px; margin-top: 8px;"><br>
+        {% endif %}
+
+        {% if status.caption %}
+          <p style="margin-top: 5px;">{{ status.caption }}</p>
+        {% endif %}
+
+        <small style="color: #888;">Viewed by: {{ status.viewers.count }} people</small>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>You haven't posted any status in the last 24 hours.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+  }
+
+  h2 {
+    color: #075e54;  
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-left: 5px;
+  }
+
+  .status-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    margin-bottom: 35px;
+  }
+
+  .status-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .status-card {
+    width: 110px;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s;
+  }
+
+  .status-card:hover {
+    transform: scale(1.05);
+  }
+
+  .status-card img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #25d366;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .status-user {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .status-caption {
+    font-size: 13px;
+    color: #777;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .no-status {
+    font-style: italic;
+    color: #999;
+    padding: 15px 0;
+    text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .status-card {
+      width: 90px;
+    }
+
+    .status-card img {
+      width: 70px;
+      height: 70px;
+    }
+
+    .status-user {
+      font-size: 13px;
+    }
+
+    .status-caption {
+      font-size: 12px;
+    }
+  }
+</style>
+
+<div class="status-section">
+  <h2>My Status</h2>
+  {% if my_statuses %}
+    <div class="status-list">
+      {% for status in my_statuses %}
+  <div style="margin-bottom: 30px;">
+    <a href="{% url 'view_single_status' status.id %}" class="status-card" style="display: inline-block;">
+      <img src="{{ status.image.url }}" alt="My Status">
+      <div class="status-user">Me</div>
+      <div class="status-caption">{{ status.caption|default:"No Caption" }}</div>
+    </a>
+
+    <div style="margin-top: 12px;">
+      <strong style="font-size: 14px;">👀 Viewed by:</strong>
+      {% if status.viewers.all %}
+        <ul style="margin-top: 6px; padding-left: 15px;">
+          {% for viewer in status.viewers.all %}
+            <li style="margin-bottom: 4px;">
+              {% if viewer.profile_picture %}
+                <img src="{{ viewer.profile_picture.url }}" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 6px; vertical-align: middle;">
+              {% else %}
+                <img src="{% static 'default-profile.png' %}" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 6px; vertical-align: middle;">
+              {% endif %}
+              <span style="vertical-align: middle;">{{ viewer.username }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p style="color: #999; font-style: italic;">No one has viewed this yet.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+
+    </div>
+  {% else %}
+    <p class="no-status">You have no active status.</p>
+  {% endif %}
+</div>
+
+<div class="status-section">
+  <h2>Others' Status</h2>
+  {% if statuses %}
+    <div class="status-list">
+      {% for status in statuses %}
+        <a href="{% url 'view_single_status' status.id %}" class="status-card" title="{{ status.caption|default:'No caption' }}">
+          <img src="{{ status.image.url }}" alt="{{ status.user.username }}'s Status">
+          <div class="status-user">{{ status.user.username }}</div>
+          <div class="status-caption">{{ status.caption|truncatechars:20 }}</div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="no-status">No statuses found.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

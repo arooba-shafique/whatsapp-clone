@@ -1,0 +1,311 @@
+.whatsapp-container {
+    display: flex;
+    height: 88vh;
+    width: 100%;
+    background-color: #e5ddd5;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+.starred-icon {
+  color: gold;
+}
+.unstarred-icon {
+  color: gray;
+}
+.toggle-star {
+  transition: color 0.3s ease;
+}
+.edited-label {
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+  margin-left: 6px;
+}
+.reaction-menu {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  background: white;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  display: none;
+  z-index: 9999;
+}
+.menu-dropdown {
+  position: absolute;
+  top: 25px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  width: 150px;
+  padding: 10px;
+  display: none;
+}
+.menu-dropdown a {
+  display: block;
+  padding: 8px 10px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.menu-dropdown a:hover {
+  background-color: #f1f1f1;
+}
+.icon-bar {
+    width: 70px;
+    background-color: #f0f2f5;
+    border-right: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+.icon-bar .top-icons i,
+.icon-bar .bottom-icons i {
+    font-size: 18px;
+    color: #555;
+    margin: 20px 0;
+    cursor: pointer;
+}
+.icon-bar .top-icons,
+.icon-bar .bottom-icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    transform: translateY(-20px);
+}
+.icon-bar .bottom-icons a img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    cursor: pointer;
+    object-fit: cover;
+}
+.sidebar {
+    width: 25%;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-header {
+    padding: 10px 15px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+}
+.sidebar-header input {
+    width: 100%;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    background-color: #ececec;
+    font-size: 14px;
+}
+.user-list {
+    flex: 1;
+    overflow-y: auto;
+}
+.user-card {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    color: inherit;
+}
+.user-card:hover {
+    background-color: #f5f5f5;
+}
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+.chat-section {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    background-color: #E0F6C2;
+    background-image: url("/static/whatsapp-bg.png");
+    background-size: cover;
+    background-position: center;
+}
+.chat-header {
+    background-color: #f0f2f5;
+    padding: 10px 15px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+}
+.chat-header img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.chat-bubble {
+    max-width: 60%;
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    border-radius: 7.5px;
+    position: relative;
+    font-size: 14px;
+    word-break: break-word;
+}
+.sent {
+    background-color: #DCF8C6;
+    align-self: flex-end;
+    text-align: left;
+}
+.received {
+    background-color: #FFF;
+    align-self: flex-start;
+    text-align: left;
+}
+.message-time {
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 5px;
+    display: block;
+}
+.tick-icons {
+    font-size: 0.75rem;
+    margin-left: 6px;
+}
+.tick-icons .fa-check {
+    color: gray;
+}
+.tick-icons .fa-check-double {
+    color: gray;
+}
+.tick-icons .blue {
+    color: #34b7f1;
+}
+.chat-footer {
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    border-top: 1px solid #ccc;
+}
+.chat-footer form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.chat-footer textarea {
+    flex: 1;
+    resize: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+.chat-footer button {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-color: #25d366;
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+.chat-footer button:hover {
+    background-color: #20b758;
+}
+.unread-badge {
+    background-color: #25D366;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 7px;
+    margin-left: 8px;
+}
+.settings-dropdown {
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 999;
+    width: 200px;
+    padding: 10px;
+}
+.settings-dropdown a {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #333;
+    border-radius: 4px;
+}
+.settings-dropdown a:hover {
+    background-color: #f1f1f1;
+}
+.status-dropdown {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+    width: 180px;
+    padding: 10px;
+}
+.status-dropdown a {
+    display: block;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    border-radius: 4px;
+}
+.status-dropdown a:hover {
+    background-color: #f1f1f1;
+}
+.chat-bubble {
+  background-color: #dcf8c6;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 8px;
+  max-width: 70%;
+}
+.sent {
+  margin-left: auto;
+  background-color: #e2ffc7;
+}
+.received {
+  margin-right: auto;
+  background-color: #ffffff;
+}
+#deleteForEveryoneBtn {
+  display: none;
+}
+.remove-btn {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Your Groups</h3>
+<a href="{% url 'create_group' %}" class="btn btn-success mb-3">+ Create New Group</a>
+<ul class="list-group">
+  {% for group in groups %}
+    <li class="list-group-item">
+      <a href="{% url 'group_chat_detail' group.id %}">
+        {{ group.name }} ({{ group.members.count }} members)
+      </a>
+    </li>
+  {% empty %}
+    <li class="list-group-item">You are not part of any group yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

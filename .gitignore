@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django migrations
+*/migrations/*.py
+*/migrations/*.pyc
+
+# Media files
+media/
+*.sqlite3
+
+# Environment
+.env
+venv/
+my_venv/
+
+# IDE / OS files
+.vscode/
+*.DS_Store
+Thumbs.db
